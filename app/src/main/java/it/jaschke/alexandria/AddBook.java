@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -175,7 +176,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     }
 
     /**
-     *  Callback method that gives access to a table row.
+     *  Callback method triggered when the load manager has finished
+     *  loading data from the content provider.
      *
      * @param loader Reference to loader that has just had its data loaded.
      * @param data A row of data from the content provider.
