@@ -1,0 +1,12 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="alexandria_material_theme" parent="@style/Theme.AppCompat.Light.NoActionBar" >
+        <item name="colorPrimary">@color/primary_material_light_1</item>
+    </style>
+
+</resources>
