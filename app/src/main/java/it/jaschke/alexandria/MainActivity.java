@@ -8,27 +8,35 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 import it.jaschke.alexandria.api.Callback;
 
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
+public class MainActivity extends ActionBarActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
 
     /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+     * Fragment managing the behaviors, interactions and
+     * presentation of the navigation drawer.
      */
     private NavigationDrawerFragment navigationDrawerFragment;
 
     /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
+     * Used to store the last screen title. For use
+     * in {@link #restoreActionBar()}.
      */
     private CharSequence title;
     public static boolean IS_TABLET = false;
@@ -36,6 +44,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
+
+    // Fragments that'll be used throughout the app
+    AddBook addBookFragment;
+    ListOfBooks listOfBooksFragment;
+    About aboutFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,27 +76,33 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment nextFragment;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        //Fragment nextFragment;
 
         switch (position){
             default:
             case 0:
-                nextFragment = new ListOfBooks();
+                listOfBooksFragment = new ListOfBooks();
+                transaction
+                        .replace(R.id.container, listOfBooksFragment, "book list")
+                        .addToBackStack((String) title);
                 break;
             case 1:
-                nextFragment = new AddBook();
+                addBookFragment= new AddBook();
+                addBookFragment.setRetainInstance(true);
+                transaction
+                        .replace(R.id.container, addBookFragment, "add books")
+                        .addToBackStack((String) title);
                 break;
             case 2:
-                nextFragment = new About();
+                aboutFragment = new About();
+                transaction
+                        .replace(R.id.container, aboutFragment, "about")
+                        .addToBackStack((String) title);
                 break;
-
         }
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, nextFragment)
-                .addToBackStack((String) title)
-                .commit();
+        transaction.commit();
     }
 
     public void setTitle(int titleId) {
@@ -178,5 +197,17 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         super.onBackPressed();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("add books");
+        if(fragment != null) {
+            Log.d("AMHA", "Fragment exists and is the right type.");
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+        else{
+            Log.d("AMHA", "Fragment is Null");
+        }
+    }
 }

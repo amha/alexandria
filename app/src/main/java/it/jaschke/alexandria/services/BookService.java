@@ -62,7 +62,8 @@ public class BookService extends IntentService {
      */
     private void deleteBook(String ean) {
         if(ean!=null) {
-            getContentResolver().delete(AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)), null, null);
+            getContentResolver().delete(AlexandriaContract
+                    .BookEntry.buildBookUri(Long.parseLong(ean)), null, null);
         }
     }
 
@@ -76,6 +77,7 @@ public class BookService extends IntentService {
             return;
         }
 
+        // Retrieve an instance of a book from the content provider
         Cursor bookEntry = getContentResolver().query(
                 AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)),
                 null, // leaving "columns" null just returns all the columns.
@@ -84,6 +86,8 @@ public class BookService extends IntentService {
                 null  // sort order
         );
 
+        // If a book was retrieved from the content resolver there is
+        // no need to make a network request so we return
         if(bookEntry.getCount()>0){
             bookEntry.close();
             return;
@@ -91,6 +95,7 @@ public class BookService extends IntentService {
 
         bookEntry.close();
 
+        // Prepare for network request to the Google Books API
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String bookJsonString = null;
@@ -164,7 +169,9 @@ public class BookService extends IntentService {
             }else{
                 Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
                 messageIntent.putExtra(MainActivity.MESSAGE_KEY,getResources().getString(R.string.not_found));
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
+
+                LocalBroadcastManager.getInstance(
+                        getApplicationContext()).sendBroadcast(messageIntent);
                 return;
             }
 
@@ -183,7 +190,9 @@ public class BookService extends IntentService {
             }
 
             String imgUrl = "";
-            if(bookInfo.has(IMG_URL_PATH) && bookInfo.getJSONObject(IMG_URL_PATH).has(IMG_URL)) {
+            if(bookInfo.has(IMG_URL_PATH)
+                    && bookInfo.getJSONObject(IMG_URL_PATH).has(IMG_URL)) {
+
                 imgUrl = bookInfo.getJSONObject(IMG_URL_PATH).getString(IMG_URL);
             }
 

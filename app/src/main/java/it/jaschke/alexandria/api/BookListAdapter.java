@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.Bind;
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.DownloadImage;
@@ -18,7 +19,6 @@ import it.jaschke.alexandria.services.DownloadImage;
  * Created by saj on 11/01/15.
  */
 public class BookListAdapter extends CursorAdapter {
-
 
     public static class ViewHolder {
         public final ImageView bookCover;
@@ -41,19 +41,23 @@ public class BookListAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        String imgUrl = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
+        String imgUrl = cursor.getString(
+                cursor.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         new DownloadImage(viewHolder.bookCover).execute(imgUrl);
 
-        String bookTitle = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
+        String bookTitle = cursor.getString(
+                cursor.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         viewHolder.bookTitle.setText(bookTitle);
 
-        String bookSubTitle = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
+        String bookSubTitle = cursor.getString(
+                cursor.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
         viewHolder.bookSubTitle.setText(bookSubTitle);
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.book_list_item, parent, false);
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.book_list_item, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
