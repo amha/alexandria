@@ -1,23 +1,25 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,7 +80,32 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ButterKnife.bind(this, rootView);
 
-        // Check if user has entered a barcode number
+        // Check if we have a network connection
+        if(checkNetwork() == false){
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.dialog_message)
+                    .setTitle(R.string.dialog_title);
+
+            builder.setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent in = new Intent(android.provider.Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+                    startActivity(in);
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+
+
+            // Check if user has entered a barcode number
         barcodeNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -93,6 +120,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             @Override
             public void afterTextChanged(Editable s) {
                 String ean = s.toString();
+
+                // Check if user has entered a valid number
+                if (isEAN(ean) == false) {
+                    Toast.makeText(
+                            getActivity(),
+                            "You Must Enter a 13 digit number",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 //catch isbn10 numbers
                 if (ean.length() == 10 && !ean.startsWith("978")) {
@@ -110,6 +146,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
                 getActivity().startService(bookIntent);
                 AddBook.this.restartLoader();
+
             }
         });
 
@@ -143,9 +180,16 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
         });
 
+        // Check if we're recreating the fragment based on runtime
+        // changes or not.
         if (savedInstanceState != null) {
-            barcodeNumber.setText(savedInstanceState.getString(EAN_CONTENT));
-            barcodeNumber.setHint("");
+            String EAN = savedInstanceState.get(EAN_CONTENT).toString();
+
+            // Restore the EAN number in the edit text view
+            if((EAN.length() < 13) || (EAN.length() > 0)) {
+                barcodeNumber.setHint("");
+                barcodeNumber.setText(savedInstanceState.getString(EAN_CONTENT));
+            }
         }
 
         return rootView;
@@ -258,5 +302,45 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if(scanResult != null){
             barcodeNumber.setText(scanResult.getContents());
         }
+    }
+
+    /**
+     * Check if the user has entered a valid number
+     *
+     * */
+    private boolean isEAN(String EAN){
+        boolean isNumber = false;
+        if(EAN == null){
+            return isNumber;
+        }
+        else if(EAN.length() > 0){
+            for (char c : EAN.toCharArray()){
+                if (!Character.isDigit(c)) return isNumber;
+            }
+            isNumber = true;
+        }
+        return isNumber;
+
+    }
+
+    /**
+     * Check for network connectivity.
+     * */
+    private boolean checkNetwork(){
+        boolean isConnected = false;
+
+        // Get network state
+        ConnectivityManager cm = (ConnectivityManager)getActivity()
+                        .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+        // Determine network state
+        if(networkInfo == null || networkInfo.isConnected() == false){
+            // We don't have a network connection, thus we show a dialog
+            return isConnected;
+        } else {
+            isConnected = true;
+        }
+        return isConnected;
     }
 }

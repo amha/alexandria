@@ -45,7 +45,6 @@ public class MainActivity extends ActionBarActivity
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
 
-    // Fragments that'll be used throughout the app
     AddBook addBookFragment;
     ListOfBooks listOfBooksFragment;
     About aboutFragment;
@@ -53,6 +52,17 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check if we're recreating the activity due to
+        // runtime changes. If so, restore the page title
+        if(savedInstanceState != null){
+            restoreActionBar();
+        }
+        else{
+            title = getTitle();
+        }
+
+        // Check if we're running on a tablet or mobile
         IS_TABLET = isTablet();
         if(IS_TABLET){
             setContentView(R.layout.activity_main_tablet);
@@ -66,11 +76,10 @@ public class MainActivity extends ActionBarActivity
 
         navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        title = getTitle();
 
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer,
-                    (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
     @Override
@@ -84,24 +93,23 @@ public class MainActivity extends ActionBarActivity
             case 0:
                 listOfBooksFragment = new ListOfBooks();
                 transaction
-                        .replace(R.id.container, listOfBooksFragment, "book list")
-                        .addToBackStack((String) title);
+                    .replace(R.id.container, listOfBooksFragment, "book list")
+                    .addToBackStack((String) title);
                 break;
             case 1:
-                addBookFragment= new AddBook();
-                addBookFragment.setRetainInstance(true);
+                addBookFragment = new AddBook();
                 transaction
-                        .replace(R.id.container, addBookFragment, "add books")
-                        .addToBackStack((String) title);
+                    .replace(R.id.container, addBookFragment, "add books")
+                    .addToBackStack((String) title);
+
                 break;
             case 2:
                 aboutFragment = new About();
                 transaction
-                        .replace(R.id.container, aboutFragment, "about")
-                        .addToBackStack((String) title);
+                     .replace(R.id.container, aboutFragment, "about")
+                     .addToBackStack((String) title);
                 break;
         }
-
         transaction.commit();
     }
 
@@ -190,6 +198,11 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onBackPressed() {
         if(getSupportFragmentManager().getBackStackEntryCount()<2){
             finish();
@@ -197,13 +210,29 @@ public class MainActivity extends ActionBarActivity
         super.onBackPressed();
     }
 
+    /** Handle tapping the FAB. */
+    @Override
+    public void addNewBook(){
+        // Check is Add Book fragment has been created or not
+        if(getSupportFragmentManager().findFragmentByTag("add books") != null){
+           addBookFragment = (AddBook) getSupportFragmentManager()
+                   .findFragmentByTag("add books");
+        }
+        else {
+            addBookFragment = new AddBook();
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, addBookFragment, "add books")
+                .addToBackStack((String) title)
+                .commit();
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("add books");
         if(fragment != null) {
-            Log.d("AMHA", "Fragment exists and is the right type.");
             fragment.onActivityResult(requestCode, resultCode, data);
         }
         else{

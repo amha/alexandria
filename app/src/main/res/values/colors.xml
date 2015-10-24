@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary_material_light_1">#ffc107</color>
-    <color name="accent_material_light">#f50348</color>
-    <color name="primary_dark_material_light">#f9a508</color>
+    <color name="accent_material_light">#cddc39</color>
+    <color name="primary_dark_material_light">#01579b</color>
     <color name="accent_material_dark">#b388ff</color>
+    <color name="accent_material_dark_1">#b388ff</color>
+    <color name="primary_material_dark_1">#212121</color>
+    <color name="primary_material_light_2">#2196f3</color>
+    <color name="primary_material_light_3">#2196f3</color>
+    <color name="primary_material_light_4">#03a9f4</color>
+    <color name="black">#01579b</color>
+    <color name="statusBarColor">#01579b</color>
 </resources>

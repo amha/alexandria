@@ -39,4 +39,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.google.zxing:android-integration:3.2.1'
+    compile 'com.github.clans:fab:1.6.1'
 }

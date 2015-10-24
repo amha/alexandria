@@ -28,6 +28,12 @@
     <!-- Barcode Scanner -->
     <string name="scanner_title">Scan Book</string>
 
+    <!-- Network Connection Alert Dialog -->
+    <string name="dialog_message">You seem to be offline, but you need to be online to add/scan a book. Do you want to turn network settings on? </string>
+    <string name="dialog_title">Go Online?</string>
+    <string name="dialog_cancel">Canel</string>
+    <string name="dialog_ok">Ok</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
     The original version of this app was built by Sascha Jaschke, and a modified version is given to students in the Udacity Android Nanodegree program. </string>

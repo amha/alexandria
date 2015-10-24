@@ -9,4 +9,8 @@
         <item name="colorPrimary">@color/primary_material_light_1</item>
     </style>
 
+    <style name="Alexandria_Blue" parent="@style/Theme.AppCompat.Light.NoActionBar" >
+        <item name="colorPrimary">@color/primary_material_light_4</item>
+    </style>
+
 </resources>
