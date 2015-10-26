@@ -5,11 +5,11 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="alexandria_material_theme" parent="@style/Theme.AppCompat.Light.NoActionBar" >
+    <style name="alexandria_material_theme" parent="@style/Theme.AppCompat.Light" >
         <item name="colorPrimary">@color/primary_material_light_1</item>
     </style>
 
-    <style name="Alexandria_Blue" parent="@style/Theme.AppCompat.Light.NoActionBar" >
+    <style name="Alexandria_Blue" parent="@style/Theme.AppCompat" >
         <item name="colorPrimary">@color/primary_material_light_4</item>
     </style>
 
