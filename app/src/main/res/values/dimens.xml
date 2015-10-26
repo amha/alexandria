@@ -12,6 +12,6 @@
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
 
-    <dimen name="jumbo_text_size">18sp</dimen>
-    <dimen name="jumbo_spacing">12dp</dimen>
+    <dimen name="jumbo_text_size">16sp</dimen>
+    <dimen name="jumbo_spacing">10dp</dimen>
 </resources>

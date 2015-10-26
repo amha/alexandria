@@ -19,6 +19,6 @@
     <style name="jumboText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/jumbo_text_size</item>
         <item name="android:lineSpacingExtra">@dimen/jumbo_spacing</item>
-        <item name="android:lineSpacingMultiplier">@dimen/jumbo_spacing</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 </resources>
