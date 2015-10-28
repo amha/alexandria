@@ -68,7 +68,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (barcodeNumber != null) {
+        if (barcodeNumber != null && barcodeNumber.getText().toString().length() > 0) {
             outState.putString(EAN_CONTENT, barcodeNumber.getText().toString());
         }
     }
@@ -121,15 +121,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             public void afterTextChanged(Editable s) {
                 String ean = s.toString();
 
-                // Check if user has entered a valid number
-                if (isEAN(ean) == false) {
-                    Toast.makeText(
-                            getActivity(),
-                            "You Must Enter a 13 digit number",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 //catch isbn10 numbers
                 if (ean.length() == 10 && !ean.startsWith("978")) {
                     ean = "978" + ean;
@@ -139,13 +130,16 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     return;
                 }
 
-                //Once we have an ISBN, start a book intent
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean);
-                bookIntent.setAction(BookService.FETCH_BOOK);
+                if(isEAN(ean) == true && ean.length() == 13) {
 
-                getActivity().startService(bookIntent);
-                AddBook.this.restartLoader();
+                    //Once we have an ISBN, start a book intent
+                    Intent bookIntent = new Intent(getActivity(), BookService.class);
+                    bookIntent.putExtra(BookService.EAN, ean);
+                    bookIntent.setAction(BookService.FETCH_BOOK);
+
+                    getActivity().startService(bookIntent);
+                    AddBook.this.restartLoader();
+                }
 
             }
         });
@@ -165,6 +159,14 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             @Override
             public void onClick(View view) {
                 barcodeNumber.setText("");
+                clearFields();
+
+                // System has added book to list and provides
+                // user confirmation via toast message.
+                Toast.makeText(
+                        getActivity(),
+                        "Added Book to your list.",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -177,6 +179,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 bookIntent.setAction(BookService.DELETE_BOOK);
                 getActivity().startService(bookIntent);
                 barcodeNumber.setText("");
+                clearFields();
             }
         });
 

@@ -144,4 +144,10 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         super.onAttach(activity);
         activity.setTitle(R.string.books);
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        restartLoader();
+    }
 }

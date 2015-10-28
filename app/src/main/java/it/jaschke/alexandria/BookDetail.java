@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -77,8 +78,14 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
                 bookIntent.putExtra(BookService.EAN, ean);
                 bookIntent.setAction(BookService.DELETE_BOOK);
+
                 getActivity().startService(bookIntent);
                 getActivity().getSupportFragmentManager().popBackStack();
+
+                Toast.makeText(
+                        getActivity(),
+                        "Book Removed from your list.",
+                        Toast.LENGTH_SHORT).show();
             }
         });
         return rootView;

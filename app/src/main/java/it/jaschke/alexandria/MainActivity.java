@@ -213,6 +213,7 @@ public class MainActivity extends ActionBarActivity
     /** Handle tapping the FAB. */
     @Override
     public void addNewBook(){
+
         // Check is Add Book fragment has been created or not
         if(getSupportFragmentManager().findFragmentByTag("add books") != null){
            addBookFragment = (AddBook) getSupportFragmentManager()
@@ -222,6 +223,10 @@ public class MainActivity extends ActionBarActivity
             addBookFragment = new AddBook();
         }
 
+        // Updated selected value of Navigation Drawer
+        navigationDrawerFragment.selectItem(1);
+
+        // Load Add/Scan book fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, addBookFragment, "add books")
                 .addToBackStack((String) title)
