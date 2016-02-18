@@ -39,7 +39,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Bind(R.id.authors) TextView authorsView;
     @Bind(R.id.fullBookCover) ImageView bookCoverView;
     @Bind(R.id.categories) TextView categoriesView;
-    @Bind(R.id.backButton) Button backButtonView;
     @Bind(R.id.delete_button) Button deleteButtonView;
 
     public static final String EAN_KEY = "EAN";
@@ -98,6 +97,14 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         MenuItem menuItem = menu.findItem(R.id.action_share);
         shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        // Setup sharing functionality
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
+        shareActionProvider.setShareIntent(shareIntent);
+
     }
 
     @Override
@@ -130,12 +137,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
                 data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         bookTitleView.setText(bookTitle);
 
-        // Setup sharing functionality
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text)+bookTitle);
-        shareActionProvider.setShareIntent(shareIntent);
 
         // Set book subtitle
         String bookSubTitle = data.getString(
@@ -150,6 +151,13 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         // Parse and display a list of authors
         String authors = data.getString(
                 data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
+
+        // Adding null check for book objects that do not have authors
+        if(authors == null)
+        {
+            return;
+        }
+
         String[] authorsArr = authors.split(",");
         authorsView.setLines(authorsArr.length);
         authorsView.setText(authors.replace(",", "\n"));
@@ -168,12 +176,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         String categories = data.getString(
                 data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         categoriesView.setText(categories);
-
-        // Display
-        if(rootView.findViewById(R.id.right_container)!=null){
-            backButtonView.setVisibility(View.INVISIBLE);
-        }
-
     }
 
     @Override

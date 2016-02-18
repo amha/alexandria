@@ -33,25 +33,36 @@ import butterknife.ButterKnife;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
+
 /**
  * A subclass of {@link Fragment} that searches for books by scanning
  * a barcode or entering the 13 digit International Article Number.
- *
  **/
 public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
 
-    /** Using {@link ButterKnife} to bind views. */
-    @Bind(R.id.ean) EditText barcodeNumber;
-    @Bind(R.id.bookTitle) TextView bookTitleView;
-    @Bind(R.id.bookSubTitle) TextView bookSubTitleView;
-    @Bind(R.id.authors) TextView authorsView;
-    @Bind(R.id.bookCover) ImageView bookCoverView;
-    @Bind(R.id.categories) TextView categoriesView;
-    @Bind(R.id.save_button) Button saveButtonView;
-    @Bind(R.id.delete_button) Button deleteButtonView;
-    @Bind(R.id.scan_button) Button scanButtonView;
+    /**
+     * Using {@link ButterKnife} to bind views.
+     */
+    @Bind(R.id.ean)
+    EditText barcodeNumber;
+    @Bind(R.id.bookTitle)
+    TextView bookTitleView;
+    @Bind(R.id.bookSubTitle)
+    TextView bookSubTitleView;
+    @Bind(R.id.authors)
+    TextView authorsView;
+    @Bind(R.id.bookCover)
+    ImageView bookCoverView;
+    @Bind(R.id.categories)
+    TextView categoriesView;
+    @Bind(R.id.save_button)
+    Button saveButtonView;
+    @Bind(R.id.delete_button)
+    Button deleteButtonView;
+    @Bind(R.id.scan_button)
+    Button scanButtonView;
 
     private final int LOADER_ID = 1;
     private View rootView;
@@ -81,7 +92,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         ButterKnife.bind(this, rootView);
 
         // Check if we have a network connection
-        if(checkNetwork() == false){
+        if (checkNetwork() == false) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.dialog_message)
                     .setTitle(R.string.dialog_title);
@@ -105,7 +116,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         }
 
 
-            // Check if user has entered a barcode number
+        // Check if user has entered a barcode number
         barcodeNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -130,7 +141,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     return;
                 }
 
-                if(isEAN(ean) == true && ean.length() == 13) {
+                if (isEAN(ean) == true && ean.length() == 13) {
 
                     //Once we have an ISBN, start a book intent
                     Intent bookIntent = new Intent(getActivity(), BookService.class);
@@ -189,7 +200,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             String EAN = savedInstanceState.get(EAN_CONTENT).toString();
 
             // Restore the EAN number in the edit text view
-            if((EAN.length() < 13) || (EAN.length() > 0)) {
+            if ((EAN.length() < 13) || (EAN.length() > 0)) {
                 barcodeNumber.setHint("");
                 barcodeNumber.setText(savedInstanceState.getString(EAN_CONTENT));
             }
@@ -225,11 +236,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     }
 
     /**
-     *  Callback method triggered when the load manager has finished
-     *  loading data from the content provider.
+     * Callback method triggered when the load manager has finished
+     * loading data from the content provider.
      *
      * @param loader Reference to loader that has just had its data loaded.
-     * @param data A row of data from the content provider.
+     * @param data   A row of data from the content provider.
      */
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
@@ -247,6 +258,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         String authors = data.getString(
                 data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
+
+        // Adding null check for book objects that do not have authors
+        if (authors == null) {
+            return;
+        }
+
         String[] authorsArr = authors.split(",");
 
         authorsView.setLines(authorsArr.length);
@@ -297,27 +314,25 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         IntentResult scanResult =
                 IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
-        if(scanResult != null){
+        if (scanResult != null) {
             barcodeNumber.setText(scanResult.getContents());
         }
     }
 
     /**
      * Check if the user has entered a valid number
-     *
-     * */
-    private boolean isEAN(String EAN){
+     */
+    private boolean isEAN(String EAN) {
         boolean isNumber = false;
-        if(EAN == null){
+        if (EAN == null) {
             return isNumber;
-        }
-        else if(EAN.length() > 0){
-            for (char c : EAN.toCharArray()){
+        } else if (EAN.length() > 0) {
+            for (char c : EAN.toCharArray()) {
                 if (!Character.isDigit(c)) return isNumber;
             }
             isNumber = true;
@@ -328,17 +343,17 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     /**
      * Check for network connectivity.
-     * */
-    private boolean checkNetwork(){
+     */
+    private boolean checkNetwork() {
         boolean isConnected = false;
 
         // Get network state
-        ConnectivityManager cm = (ConnectivityManager)getActivity()
-                        .getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getActivity()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 
         // Determine network state
-        if(networkInfo == null || networkInfo.isConnected() == false){
+        if (networkInfo == null || networkInfo.isConnected() == false) {
             // We don't have a network connection, thus we show a dialog
             return isConnected;
         } else {
