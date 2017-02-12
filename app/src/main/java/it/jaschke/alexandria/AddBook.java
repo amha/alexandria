@@ -24,11 +24,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
@@ -45,23 +44,23 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     /**
      * Using {@link ButterKnife} to bind views.
      */
-    @Bind(R.id.ean)
+    @BindView(R.id.ean)
     EditText barcodeNumber;
-    @Bind(R.id.bookTitle)
+    @BindView(R.id.bookTitle)
     TextView bookTitleView;
-    @Bind(R.id.bookSubTitle)
+    @BindView(R.id.bookSubTitle)
     TextView bookSubTitleView;
-    @Bind(R.id.authors)
+    @BindView(R.id.authors)
     TextView authorsView;
-    @Bind(R.id.bookCover)
+    @BindView(R.id.bookCover)
     ImageView bookCoverView;
-    @Bind(R.id.categories)
+    @BindView(R.id.categories)
     TextView categoriesView;
-    @Bind(R.id.save_button)
+    @BindView(R.id.save_button)
     Button saveButtonView;
-    @Bind(R.id.delete_button)
+    @BindView(R.id.delete_button)
     Button deleteButtonView;
-    @Bind(R.id.scan_button)
+    @BindView(R.id.scan_button)
     Button scanButtonView;
 
     private final int LOADER_ID = 1;

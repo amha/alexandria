@@ -16,7 +16,7 @@ import android.widget.ListView;
 
 import com.github.clans.fab.FloatingActionButton;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.jaschke.alexandria.api.BookListAdapter;
 import it.jaschke.alexandria.api.Callback;
@@ -29,8 +29,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     private ListView bookList;
     private int position = ListView.INVALID_POSITION;
 
-    @Bind(R.id.fab) FloatingActionButton fab;
-    @Bind(R.id.searchText) EditText searchText;
+    @BindView(R.id.fab) FloatingActionButton fab;
+    @BindView(R.id.searchText) EditText searchText;
 
     private final int LOADER_ID = 10;
 

@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
@@ -33,13 +33,13 @@ import it.jaschke.alexandria.services.DownloadImage;
 public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // Bind Views using the ButterKinfe library
-    @Bind(R.id.fullBookTitle) TextView bookTitleView;
-    @Bind(R.id.fullBookSubTitle) TextView bookSubTitleView;
-    @Bind(R.id.fullBookDesc) TextView bookDescView;
-    @Bind(R.id.authors) TextView authorsView;
-    @Bind(R.id.fullBookCover) ImageView bookCoverView;
-    @Bind(R.id.categories) TextView categoriesView;
-    @Bind(R.id.delete_button) Button deleteButtonView;
+    @BindView(R.id.fullBookTitle) TextView bookTitleView;
+    @BindView(R.id.fullBookSubTitle) TextView bookSubTitleView;
+    @BindView(R.id.fullBookDesc) TextView bookDescView;
+    @BindView(R.id.authors) TextView authorsView;
+    @BindView(R.id.fullBookCover) ImageView bookCoverView;
+    @BindView(R.id.categories) TextView categoriesView;
+    @BindView(R.id.delete_button) Button deleteButtonView;
 
     public static final String EAN_KEY = "EAN";
     private final int LOADER_ID = 10;
