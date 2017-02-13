@@ -37,6 +37,7 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:design:25.1.1'
     compile 'com.google.zxing:android-integration:3.2.1'
     compile 'com.github.clans:fab:1.6.1'
     compile 'com.jakewharton:butterknife:8.5.1'

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Alexandria_Blue" parent="@style/Theme.AppCompat">
+    <style name="Alexandria_Blue" parent="@style/Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/primary_material_light_4</item>
         <item name="android:navigationBarColor">@color/navigationBarColor</item>
         <item name="android:statusBarColor">@color/statusBarColor</item>
@@ -12,10 +12,6 @@
         <item name="android:textColorPrimary">@color/alexandria_primary_text_material_light</item>
     </style>
 
-    <!--<style name="AppTheme" parent="@android:style/Theme.Material.Light">-->
-        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-        <!--<item name="android:navigationBarColor">@color/navigationBarColor</item>-->
-    <!--</style>-->
     <style name="jumboText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/jumbo_text_size</item>
         <item name="android:lineSpacingExtra">@dimen/jumbo_spacing</item>
