@@ -1,12 +1,13 @@
 package it.jaschke.alexandria;
 
-import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +26,17 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 
 public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    OnBookSelectedListener bookSelectedListener;
+
+    final String TAG = "Book List Fragment: ";
     private BookListAdapter bookListAdapter;
     private ListView bookList;
     private int position = ListView.INVALID_POSITION;
 
-    @BindView(R.id.fab) FloatingActionButton fab;
-    @BindView(R.id.searchText) EditText searchText;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+    @BindView(R.id.searchText)
+    EditText searchText;
 
     private final int LOADER_ID = 10;
 
@@ -75,10 +81,10 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cursor = bookListAdapter.getCursor();
 
+                Log.d(TAG, "ITEM CLICKED");
                 if (cursor != null && cursor.moveToPosition(position)) {
-                    ((Callback) getActivity()).onItemSelected(
-                            cursor.getString(cursor.getColumnIndex(
-                                    AlexandriaContract.BookEntry._ID)));
+                    bookSelectedListener.bookSelection(cursor.getString(cursor.getColumnIndex(
+                            AlexandriaContract.BookEntry._ID)));
                 }
             }
         });
@@ -86,32 +92,31 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((Callback) getActivity())
-                        .addNewBook();
+                bookSelectedListener.newBook();
             }
         });
         return rootView;
     }
 
-    private void restartLoader(){
+    private void restartLoader() {
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        final String selection = AlexandriaContract.BookEntry.TITLE +" LIKE ? OR "
+        final String selection = AlexandriaContract.BookEntry.TITLE + " LIKE ? OR "
                 + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
-        String searchString =searchText.getText().toString();
+        String searchString = searchText.getText().toString();
 
-        if(searchString.length()>0){
-            searchString = "%"+searchString+"%";
+        if (searchString.length() > 0) {
+            searchString = "%" + searchString + "%";
             return new CursorLoader(
                     getActivity(),
                     AlexandriaContract.BookEntry.CONTENT_URI,
                     null,
                     selection,
-                    new String[]{searchString,searchString},
+                    new String[]{searchString, searchString},
                     null
             );
         }
@@ -124,6 +129,18 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 null,
                 null
         );
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            bookSelectedListener = (OnBookSelectedListener) getActivity();
+        } catch (ClassCastException error) {
+            throw new ClassCastException(getActivity().toString()
+                    + " must implement OnBookSelectedListener");
+        }
     }
 
     @Override
@@ -140,14 +157,13 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        activity.setTitle(R.string.books);
-    }
-
-    @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         restartLoader();
+    }
+
+    public interface OnBookSelectedListener {
+        void bookSelection(String bookID);
+        void newBook();
     }
 }

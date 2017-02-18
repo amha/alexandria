@@ -32,7 +32,7 @@ import it.jaschke.alexandria.services.DownloadImage;
  */
 public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    // Bind Views using the ButterKinfe library
+    // Bind Views using the ButterKnife library
     @BindView(R.id.fullBookTitle) TextView bookTitleView;
     @BindView(R.id.fullBookSubTitle) TextView bookSubTitleView;
     @BindView(R.id.fullBookDesc) TextView bookDescView;
@@ -185,7 +185,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     @Override
     public void onPause() {
-        super.onDestroyView();
+        super.onPause();
         if(MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container)==null){
             getActivity().getSupportFragmentManager().popBackStack();
         }

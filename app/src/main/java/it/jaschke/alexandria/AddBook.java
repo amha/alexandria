@@ -1,11 +1,11 @@
 package it.jaschke.alexandria;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,28 +130,25 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
             @Override
             public void afterTextChanged(Editable s) {
+
                 String ean = s.toString();
+                Log.d(TAG, "TEXT CHANGED: " + ean);
 
-                //catch isbn10 numbers
-                if (ean.length() == 10 && !ean.startsWith("978")) {
-                    ean = "978" + ean;
-                }
-                if (ean.length() < 13) {
-                    clearFields();
-                    return;
-                }
+                if (inputValidation(ean)) {
 
-                if (isEAN(ean) == true && ean.length() == 13) {
+                    Log.d(TAG, "Valid Input: " + ean);
 
-                    //Once we have an ISBN, start a book intent
                     Intent bookIntent = new Intent(getActivity(), BookService.class);
                     bookIntent.putExtra(BookService.EAN, ean);
                     bookIntent.setAction(BookService.FETCH_BOOK);
 
                     getActivity().startService(bookIntent);
                     AddBook.this.restartLoader();
-                }
 
+                } else {
+                    // Error state
+                    barcodeNumber.setError(getResources().getString(R.string.input_invalude_ean));
+                }
             }
         });
 
@@ -193,17 +191,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
         });
 
-        // Check if we're recreating the fragment based on runtime
-        // changes or not.
-        if (savedInstanceState != null) {
-            String EAN = savedInstanceState.get(EAN_CONTENT).toString();
-
-            // Restore the EAN number in the edit text view
-            if ((EAN.length() < 13) || (EAN.length() > 0)) {
-                barcodeNumber.setHint("");
-                barcodeNumber.setText(savedInstanceState.getString(EAN_CONTENT));
-            }
-        }
+//        if (savedInstanceState != null) {
+//            String EAN = savedInstanceState.get(EAN_CONTENT).toString();
+//
+//            // Restore the EAN number in the edit text view
+//            if ((EAN.length() < 13) || (EAN.length() > 0)) {
+//                barcodeNumber.setHint("");
+//                barcodeNumber.setText(savedInstanceState.getString(EAN_CONTENT));
+//            }
+//        }
 
         return rootView;
     }
@@ -214,19 +210,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (barcodeNumber.getText().length() == 0) {
-            // Check if a barcode number has been added or not.
-            return null;
-        }
-        String barcodeNumberStr = barcodeNumber.getText().toString();
-        if (barcodeNumberStr.length() == 10 && !barcodeNumberStr.startsWith("978")) {
-            // User has entered 10 digit EAN number and we
-            // add "978" to convert it to the 13 digit EAN
-            barcodeNumberStr = "978" + barcodeNumberStr;
-        }
         return new CursorLoader(
                 getActivity(),
-                AlexandriaContract.BookEntry.buildFullBookUri(Long.parseLong(barcodeNumberStr)),
+                AlexandriaContract.BookEntry.buildFullBookUri(Long.parseLong(barcodeNumber.getText().toString())),
                 null,
                 null,
                 null,
@@ -234,65 +220,59 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         );
     }
 
-    /**
-     * Callback method triggered when the load manager has finished
-     * loading data from the content provider.
-     *
-     * @param loader Reference to loader that has just had its data loaded.
-     * @param data   A row of data from the content provider.
-     */
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) {
+            Log.d(TAG, "EMPTY CURSOR");
             return;
         }
+        else {
+            Log.d(TAG, "loader finished, data = " + DatabaseUtils.dumpCurrentRowToString(data));
 
-        String bookTitle = data.getString(
-                data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
-        bookTitleView.setText(bookTitle);
+            String bookTitle = data.getString(
+                    data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
+            bookTitleView.setText(bookTitle);
+            bookTitleView.setVisibility(View.VISIBLE);
+            Log.d(TAG, "BOOK TITLE:     " + bookTitle);
 
-        String bookSubTitle = data.getString(
-                data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
-        bookSubTitleView.setText(bookSubTitle);
+            String bookSubTitle = data.getString(
+                    data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
+            bookSubTitleView.setText(bookSubTitle);
 
-        String authors = data.getString(
-                data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
+            String authors = data.getString(
+                    data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
 
-        // Adding null check for book objects that do not have authors
-        if (authors == null) {
-            return;
+            // Adding null check for book objects that do not have authors
+            if (authors == null) {
+                return;
+            }
+
+            String[] authorsArr = authors.split(",");
+
+            authorsView.setLines(authorsArr.length);
+            authorsView.setText(authors.replace(",", "\n"));
+
+            String imgUrl = data.getString(
+                    data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
+
+            if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
+                new DownloadImage(bookCoverView).execute(imgUrl);
+                bookCoverView.setVisibility(View.VISIBLE);
+            }
+
+            String categories = data.getString(
+                    data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
+            categoriesView.setText(categories);
+
+            saveButtonView.setVisibility(View.VISIBLE);
+            deleteButtonView.setVisibility(View.VISIBLE);
         }
-
-        String[] authorsArr = authors.split(",");
-
-        authorsView.setLines(authorsArr.length);
-        authorsView.setText(authors.replace(",", "\n"));
-
-        String imgUrl = data.getString(
-                data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-
-        if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
-            new DownloadImage(bookCoverView).execute(imgUrl);
-            bookCoverView.setVisibility(View.VISIBLE);
-        }
-
-        String categories = data.getString(
-                data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        categoriesView.setText(categories);
-
-        saveButtonView.setVisibility(View.VISIBLE);
-        deleteButtonView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-
     }
 
-    /**
-     * Helper method that removes meta-data from the UI and hides
-     * Next/Cancel buttons for user interaction.
-     */
     private void clearFields() {
         // Override a books meta-data
         bookTitleView.setText("");
@@ -307,12 +287,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        activity.setTitle(R.string.scan);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         IntentResult scanResult =
@@ -323,26 +297,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         }
     }
 
-    /**
-     * Check if the user has entered a valid number
-     */
-    private boolean isEAN(String EAN) {
-        boolean isNumber = false;
-        if (EAN == null) {
-            return isNumber;
-        } else if (EAN.length() > 0) {
-            for (char c : EAN.toCharArray()) {
-                if (!Character.isDigit(c)) return isNumber;
-            }
-            isNumber = true;
-        }
-        return isNumber;
-
-    }
-
-    /**
-     * Check for network connectivity.
-     */
     private boolean checkNetwork() {
         boolean isConnected = false;
 
@@ -359,5 +313,18 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             isConnected = true;
         }
         return isConnected;
+    }
+
+    private boolean inputValidation(String input) {
+        if (!input.startsWith("978")) {
+            return false;
+        } else {
+            try {
+                Long.parseLong(input);
+            } catch (NumberFormatException error) {
+                return false;
+            }
+            return true;
+        }
     }
 }

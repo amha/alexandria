@@ -3,14 +3,18 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/primary_material_light_1</item>
+        <item name="colorPrimaryDark">@color/primary_material_light_2</item>
+        <item name="colorPrimary">@color/primary_material_light_3</item>
     </style>
 
     <style name="alexandria_material_theme" parent="@style/Theme.AppCompat.Light" >
         <item name="colorPrimary">@color/primary_material_light_1</item>
     </style>
 
-    <style name="Alexandria_Blue" parent="@style/Theme.AppCompat" >
+    <style name="Alexandria_Blue" parent="Theme.AppCompat.NoActionBar" >
         <item name="colorPrimary">@color/primary_material_light_4</item>
+        <item name="android:textColorPrimary">@color/primary_material_dark_1</item>
     </style>
 
 </resources>

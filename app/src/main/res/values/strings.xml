@@ -27,6 +27,7 @@
 
     <!-- Barcode Scanner -->
     <string name="scanner_title">Scan Book</string>
+    <string name="input_invalude_ean">You must enter a 13 digit number that begins with 978.</string>
 
     <!-- Network Connection Alert Dialog -->
     <string name="dialog_message">You seem to be offline, but you need to be online to add/scan a book. Do you want to turn network settings on? </string>
@@ -35,6 +36,13 @@
     <string name="dialog_ok">Ok</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
-    The original version of this app was built by Sascha Jaschke, and a modified version is given to students in the Udacity Android Nanodegree program. </string>
+    <string name="about_text_title">Summary</string>
+    <string name="about_text">Alexandria allows users to build a library of
+        books by scanning a barcode or enter an ISBN number. The data is retrieved from
+        Google Books API and stored locally using a content provider. </string>
+
+    <string name="about_status_title">Status</string>
+    <string name="about_status">Alexandra was written in October 2015 as course work for
+        Udacity’s Android Developer program. I am longer maintaining this app. </string>
+
 </resources>

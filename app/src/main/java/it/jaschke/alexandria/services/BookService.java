@@ -44,8 +44,14 @@ public class BookService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        Log.d(LOG_TAG, "Starting book intent service");
+
         if (intent != null) {
+
             final String action = intent.getAction();
+            Log.d(LOG_TAG, "INTENT ACTION: " + action);
+
             if (FETCH_BOOK.equals(action)) {
                 final String ean = intent.getStringExtra(EAN);
                 fetchBook(ean);
@@ -53,6 +59,8 @@ public class BookService extends IntentService {
                 final String ean = intent.getStringExtra(EAN);
                 deleteBook(ean);
             }
+        } else {
+            Log.d(LOG_TAG, "Intent is empty");
         }
     }
 
@@ -86,8 +94,9 @@ public class BookService extends IntentService {
                 null  // sort order
         );
 
-        // Empty database row
-        if(!bookEntry.moveToNext()){
+        // Book not in daabase
+        if (!bookEntry.moveToFirst()) {
+            Log.d(LOG_TAG, "book does not appear in db, fetch from web");
             return;
         }
         // If a book was retrieved from the content resolver there is
@@ -96,7 +105,6 @@ public class BookService extends IntentService {
             bookEntry.close();
             return;
         }
-
         bookEntry.close();
 
         // Prepare for network request to the Google Books API
@@ -137,8 +145,12 @@ public class BookService extends IntentService {
                 return;
             }
             bookJsonString = buffer.toString();
+            Log.d(LOG_TAG, "raw data: " + bookJsonString);
+
         } catch (Exception e) {
+
             Log.e(LOG_TAG, "Error ", e);
+
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -150,13 +162,10 @@ public class BookService extends IntentService {
                     Log.e(LOG_TAG, "Error closing stream", e);
                 }
             }
-
         }
 
         final String ITEMS = "items";
-
         final String VOLUME_INFO = "volumeInfo";
-
         final String TITLE = "title";
         final String SUBTITLE = "subtitle";
         final String AUTHORS = "authors";
@@ -168,10 +177,12 @@ public class BookService extends IntentService {
         try {
             // check if the response is null
             if (bookJsonString == null) {
+                Log.d(LOG_TAG, "response was null");
                 return;
             }
             JSONObject bookJson = new JSONObject(bookJsonString);
             JSONArray bookArray;
+
             if (bookJson.has(ITEMS)) {
                 bookArray = bookJson.getJSONArray(ITEMS);
             } else {
@@ -184,10 +195,9 @@ public class BookService extends IntentService {
             }
 
             JSONObject bookInfo = ((JSONObject) bookArray.get(0)).getJSONObject(VOLUME_INFO);
-
             String title = bookInfo.getString(TITLE);
-
             String subtitle = "";
+
             if (bookInfo.has(SUBTITLE)) {
                 subtitle = bookInfo.getString(SUBTITLE);
             }
@@ -203,12 +213,12 @@ public class BookService extends IntentService {
 
                 imgUrl = bookInfo.getJSONObject(IMG_URL_PATH).getString(IMG_URL);
             }
-
             writeBackBook(ean, title, subtitle, desc, imgUrl);
 
             if (bookInfo.has(AUTHORS)) {
                 writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS));
             }
+
             if (bookInfo.has(CATEGORIES)) {
                 writeBackCategories(ean, bookInfo.getJSONArray(CATEGORIES));
             }

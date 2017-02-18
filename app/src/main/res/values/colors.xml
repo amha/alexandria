@@ -6,9 +6,9 @@
     <color name="accent_material_dark">#990065</color>
     <color name="accent_material_dark_1">#b388ff</color>
     <color name="primary_material_dark_1">#212121</color>
-    <color name="primary_material_light_2">#2196f3</color>
+    <color name="primary_material_light_2">#1976d2</color>
     <color name="primary_material_light_3">#2196f3</color>
-    <color name="primary_material_light_4">#026f7a</color>
+    <color name="primary_material_light_4">#02919f</color>
     <color name="black">#01579b</color>
     <color name="statusBarColor">#026f7a</color>
     <color name="primary_material_dark">#026f7a</color>
@@ -21,4 +21,5 @@
     <color name="alexandria_primary_text_material_light">#FFFFFFFF</color>
     <color name="alexandria_disabled_alpha">#de888888</color>
     <color name="primary_text_default_material_dark">#FF292929</color>
+    <color name="primary_dark_material_dark_1">#014d55</color>
 </resources>

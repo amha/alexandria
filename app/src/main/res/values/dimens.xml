@@ -13,5 +13,5 @@
     <dimen name="navigation_drawer_width">320dp</dimen>
 
     <dimen name="jumbo_text_size">16sp</dimen>
-    <dimen name="jumbo_spacing">10dp</dimen>
+    <dimen name="jumbo_spacing">10sp</dimen>
 </resources>

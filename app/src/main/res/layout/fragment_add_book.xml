@@ -11,7 +11,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/eancontainer"
+            android:id="@+id/ean_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -43,9 +43,9 @@
             android:id="@+id/bookTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/eancontainer"
-            android:layout_alignStart="@+id/eancontainer"
-            android:layout_below="@+id/eancontainer"
+            android:layout_alignLeft="@+id/ean_container"
+            android:layout_alignStart="@+id/ean_container"
+            android:layout_below="@+id/ean_container"
             android:layout_marginTop="25dp"
             android:paddingRight="20dp"
             android:textIsSelectable="true"
@@ -56,7 +56,7 @@
             android:id="@+id/bookSubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/eancontainer"
+            android:layout_alignLeft="@+id/ean_container"
             android:layout_below="@+id/bookTitle"
             android:layout_marginTop="10dp"
             android:ellipsize="end"
@@ -66,8 +66,8 @@
             android:id="@+id/authors"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/eancontainer"
-            android:layout_alignRight="@+id/eancontainer"
+            android:layout_alignEnd="@+id/ean_container"
+            android:layout_alignRight="@+id/ean_container"
             android:layout_below="@+id/bookSubTitle"
             android:layout_marginTop="20dp"
             android:gravity="end"
@@ -77,8 +77,8 @@
             android:id="@+id/bookCover"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/eancontainer"
-            android:layout_alignStart="@+id/eancontainer"
+            android:layout_alignLeft="@+id/ean_container"
+            android:layout_alignStart="@+id/ean_container"
             android:layout_alignTop="@+id/authors"
             android:contentDescription="@string/book_cover" />
 
@@ -86,8 +86,8 @@
             android:id="@+id/categories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/eancontainer"
-            android:layout_alignStart="@+id/eancontainer"
+            android:layout_alignLeft="@+id/ean_container"
+            android:layout_alignStart="@+id/ean_container"
             android:layout_below="@+id/bookCover"
             android:layout_marginTop="20dp"
             android:textSize="@dimen/small_fontsize" />

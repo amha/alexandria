@@ -5,12 +5,47 @@
     android:padding="@dimen/alexandria_padding"
     tools:context="it.jaschke.alexandria.About">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textAppearance="@style/jumboText"
-        android:lineSpacingExtra="@dimen/jumbo_spacing"
-        android:text="@string/about_text" />
+        android:orientation="vertical">
 
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:text="@string/about_text_title"
+            android:textAppearance="@style/jumboText"
+            android:textSize="18sp"
+            android:textStyle="normal|bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="5dp"
+            android:text="@string/about_text"
+            android:textAllCaps="false"
+            android:paddingBottom="16dp"
+            android:textSize="@dimen/jumbo_text_size" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_status_title"
+            android:textAppearance="@style/jumboText"
+            android:paddingBottom="8dp"
+            android:textStyle="normal|bold"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="5dp"
+            android:text="@string/about_status"
+            android:textAllCaps="false"
+            android:paddingBottom="16dp"
+            android:textSize="@dimen/jumbo_text_size" />
+
+    </LinearLayout>
 </FrameLayout>

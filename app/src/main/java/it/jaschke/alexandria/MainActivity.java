@@ -40,8 +40,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ListOfBooks.OnBookSelectedListener {
 
     public static boolean IS_TABLET = false;
     private CharSequence title;
@@ -89,6 +88,15 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 });
+
+
+        if (aboutFragment == null) {
+            aboutFragment = new About();
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, aboutFragment, "about")
+                .commit();
 
         messageReciever = new MessageReciever();
         IntentFilter filter = new IntentFilter(MESSAGE_EVENT);
@@ -186,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.container, addBookFragment, "add books")
                         .addToBackStack((String) title).commit();
                 break;
-            case 2:
+            case R.id.About:
                 aboutFragment = new About();
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, aboutFragment, "about")
@@ -222,4 +230,40 @@ public class MainActivity extends AppCompatActivity {
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
+    public void bookSelection(String bookID) {
+
+        Bundle args = new Bundle();
+        args.putString(BookDetail.EAN_KEY, bookID);
+
+        BookDetail fragment = new BookDetail();
+        fragment.setArguments(args);
+
+        int id = R.id.container;
+        if (findViewById(R.id.right_container) != null) {
+            id = R.id.right_container;
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(id, fragment)
+                .addToBackStack("Book Detail")
+                .commit();
+
+    }
+
+    public void newBook() {
+
+        // Check is Add Book fragment has been created or not
+        if (getSupportFragmentManager().findFragmentByTag("add books") != null) {
+            addBookFragment = (AddBook) getSupportFragmentManager()
+                    .findFragmentByTag("add books");
+        } else {
+            addBookFragment = new AddBook();
+        }
+
+        // Load Add/Scan book fragment
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, addBookFragment, "add books")
+                .addToBackStack((String) title)
+                .commit();
+    }
 }

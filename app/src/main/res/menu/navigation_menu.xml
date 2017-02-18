@@ -12,5 +12,9 @@
             android:checked="false"
             android:title="@string/scan" />
 
+        <item android:id="@+id/About"
+            android:checked="true"
+            android:title="@string/about"/>
+
     </group>
 </menu>

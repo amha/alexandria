@@ -60,8 +60,8 @@
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
-        fab:fab_colorNormal="@color/accent_material_light"
-        fab:fab_colorPressed="@color/primary_material_dark_1"
+        fab:fab_colorNormal="@color/primary_material_light_1"
+        fab:fab_colorPressed="@color/primary_material_light_1"
         android:src="@drawable/fab_add"
         fab:fab_colorRipple="@color/ripple_material_dark" />
 
